@@ -1,12 +1,31 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link>
-      <router-link to="/set">Sets</router-link>
-    </div>
-    <router-view/>
+    <HeaderDefault />
+    <router-view />
   </div>
 </template>
+
+<script>
+import HeaderDefault from '@/layouts/HeaderDefault.vue'
+
+export default {
+    components: {
+        HeaderDefault
+    },
+    data() {
+        return {
+            search: null
+        }
+    },
+    methods: {
+        searchPage() {
+            const searchText = this.search.replace(' ','+');
+
+            this.$router.push(`/search?q=${searchText}`);
+        }
+    }
+}
+</script>
 
 <style lang="scss">
 // Reset
@@ -56,24 +75,5 @@ table {
 body{
     font-family: 'Open Sans', sans-serif;
     overflow-x:hidden;
-}
-
-#nav {
-    background:black;
-    height:60px;
-    display:flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding:0 10px;
-    margin-bottom:30px;
-
-    a {
-        font-size: 1.6rem;
-        color: #fff;
-
-        &.router-link-exact-active {
-            color: #42b983;
-        }
-    }
 }
 </style>

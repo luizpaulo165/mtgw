@@ -1,6 +1,6 @@
 <template>
-    <div class="w-list-cards">
-        <input type="text" v-model="search" @change="searchPage">
+    <div home-page>
+        Home
     </div>
 </template>
 
@@ -10,6 +10,11 @@ export default {
     data() {
         return {
             search: null
+        }
+    },
+    mounted() {
+        if (this.$route.name == 'Home') {
+            document.getElementById('searcBarCard').value = '';
         }
     },
     methods: {
