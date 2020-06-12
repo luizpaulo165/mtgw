@@ -5,7 +5,7 @@
       @mouseleave="handleMouseLeave"
       ref="card">
       <div class="card" :style="[cardBgTransform, cardBgImage, cardStyle]">
-        <div class="card-bg" ></div>
+        <div class="card-bg"></div>
         <!-- <div class="card-info">
           <slot name="header"></slot>
           <slot name="content"></slot>
@@ -68,7 +68,7 @@ export default {
             this.mouseLeaveDelay = setTimeout(()=>{
                 this.mouseX = 0;
                 this.mouseY = 0;
-            }, 1000);
+            }, 200);
         }
     }
 }
@@ -87,7 +87,7 @@ export default {
         cursor: pointer;
     
         &:hover {
-            transform:perspective(800px) scale(1.3);
+            transform:perspective(800px);
             transition:0.2s all ease-in-out;
             z-index:100;
 
@@ -107,13 +107,13 @@ export default {
             }
             .card-bg {
                 transition: 
-                    0.6s $hoverEasing,
+                    0.3s $hoverEasing,
                     opacity 5s $hoverEasing;
                 opacity: 0.8;
             }
             .card {
                 transition:
-                    0.6s $hoverEasing,
+                    0.3s $hoverEasing,
                     box-shadow 0.5s $hoverEasing;
                 box-shadow:
                     rgba(white, 0.2) 0 0 40px 5px,
@@ -136,7 +136,7 @@ export default {
         position: relative;
         overflow: hidden;
         border-radius: 15px;
-        transition: 1s $returnEasing;
+        transition: 0.3s $returnEasing;
     }
 
     .card-bg {
@@ -150,7 +150,7 @@ export default {
         background-position: center;
         background-size: 88%;
         transition:
-            1s $returnEasing,
+            3s $returnEasing,
             opacity 5s 1s $returnEasing;
         pointer-events: none;
     }

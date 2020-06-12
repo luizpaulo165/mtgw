@@ -1,12 +1,12 @@
 <template>
-    <div class="flip-box" :fliped="flipCard">
+    <div class="flip-box" :fliped="flipCard" v-if="!loading">
         <div class="rotate-btn" @click="flipCard = !flipCard"></div>
         <div class="flip-box-inner">
             <div class="flip-box-front">
-                <img :src="value[0].image_uris['normal']">
+                <img :src="value[0].image_uris['normal']" :title="value[0].name" />
             </div>
             <div class="flip-box-back">
-                <img :src="value[1].image_uris['normal']">
+                <img :src="value[1].image_uris['normal']" :title="value[1].name" />
             </div>
         </div>
     </div>
@@ -19,10 +19,11 @@ export default {
         value: Array,
         front: String,
         back: String,
+        loading: Boolean
     },
     data() {
         return {
-            flipCard: false
+            flipCard: false,
         }
     },
     methods: {
@@ -85,6 +86,10 @@ export default {
         height: 100%;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
+
+        img{
+            width:100%;
+        }
     }
 
     .flip-box-front {

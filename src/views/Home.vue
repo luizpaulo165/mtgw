@@ -13,9 +13,7 @@ export default {
         }
     },
     mounted() {
-        if (this.$route.name == 'Home') {
-            document.getElementById('searcBarCard').value = '';
-        }
+        //
     },
     methods: {
         searchPage() {

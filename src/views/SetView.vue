@@ -1,24 +1,8 @@
 <template>
-    <div search-card-page v-if="!loading">
-        <div empty-card v-if="emptyCard">
-            No card found
-        </div>
-        <div info-return-cards>
-            <div info>
-                <span>We finded <b>{{ cardShow.length }} {{ cardShow.length == 1 ? 'card' : 'cards' }}</b> where the name include {{ queryPage }}</span>
-            </div>
-        </div>
-        <div card-list v-if="!emptyCard">
-            <router-link :to="'/card/' + card.name | filterUrl" card-item v-for="(card, index) in cardShow" :key="'card-' + index">
-                <FlipCard v-if="card.card_faces" :value="card.card_faces" :loading="loading"></FlipCard>
-                <figure v-if="!card.card_faces">
-                    <img :src="card.image_uris['normal']" :title="card.name" :alt="card.name" />
-                </figure>
-            </router-link>
-        </div>
-    </div>
-    <div loading v-else>
-        <div item-loading v-for="(item, index) in 10" :key="'load-' + index" ><span></span></div>
+    <div set-view-page>
+       <pre>
+           {{ setViewContent }}
+       </pre>
     </div>
 </template>
 
@@ -26,17 +10,12 @@
 import FlipCard from '@/components/FlipCard.vue'
 
 export default {
-    name: 'Search',
-    components: {
-        FlipCard
-    },
+    name: 'SetView',
     data () {
         return {
-            cardShow: [],
-            queryPage: null,
-            loading: false,
-            emptyCard: false,
-            flipImg: false
+            setViewContent: {},
+            loading: true,
+            emptyCard: true
         }
     },
     watch:{
@@ -50,20 +29,18 @@ export default {
     methods: {
         loadingContent() {
             const self = this;
-            this.queryPage = this.$route.query.q;
+            this.queryPage = this.$route.params.code;
             this.loading = true;
 
-            this.$http.get(`https://api.scryfall.com/cards/search?q=${this.queryPage}`).then((response) => {
-                self.emptyCard = false;
-                self.perPage = parseInt(response.data['total_cards']);
-                self.cardShow = response.data.data;
-                self.loading = false;
-                console.log(self.cardShow)
+            this.$http.get(`https://api.scryfall.com/sets/${this.queryPage}`).then((response) => {
+                this.setViewContent = response.data;
+                this.loading = false;
+                this.emptyCard = false;
+                console.log(response)
             }).catch(function (error) {
-                self.emptyCard = true;
+                this.emptyCard = true;
                 console.log(error);
-            });
-
+            })
         }
     }
 }

@@ -15,6 +15,13 @@ export default {
     props: {
         card: String
     },
+    watch:{
+        $route (to, from){
+            if (this.$route.name != 'Search') {
+                document.getElementById('searcBarCard').value = '';
+            }
+        }
+    },
     methods: {
         searchPage() {
             const searchText = this.search.replace(' ','+');
