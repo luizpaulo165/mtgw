@@ -5,16 +5,18 @@
         </div>
         <div info-return-cards>
             <div info>
-                <span>We finded <b>{{ cardShow.length }} {{ cardShow.length == 1 ? 'card' : 'cards' }}</b> where the name include {{ queryPage }}</span>
+                <span>We finded <b>{{ cardShow.length }} {{ cardShow.length == 1 ? 'card' : 'cards' }}</b> where the name include <i>{{ queryPage }}</i></span>
             </div>
         </div>
         <div card-list v-if="!emptyCard">
-            <router-link :to="'/card/' + card.name | filterUrl" card-item v-for="(card, index) in cardShow" :key="'card-' + index">
-                <FlipCard v-if="card.card_faces" :value="card.card_faces" :loading="loading"></FlipCard>
-                <figure v-if="!card.card_faces">
-                    <img :src="card.image_uris['normal']" :title="card.name" :alt="card.name" />
-                </figure>
-            </router-link>
+            <div v-for="(card, index) in cardShow" :key="'card-' + index" card-item>    
+                <FlipCard v-if="card.card_faces" :linkTo="'/card/' + card.name | filterUrl" :value="card.card_faces" :loading="loading"></FlipCard>
+                <router-link :to="'/card/' + card.name | filterUrl">
+                    <figure v-if="!card.card_faces">
+                        <img :src="card.image_uris['normal']" :title="card.name" :alt="card.name" />
+                    </figure>
+                </router-link>
+            </div>
         </div>
     </div>
     <div loading v-else>
@@ -58,7 +60,6 @@ export default {
                 self.perPage = parseInt(response.data['total_cards']);
                 self.cardShow = response.data.data;
                 self.loading = false;
-                console.log(self.cardShow)
             }).catch(function (error) {
                 self.emptyCard = true;
                 console.log(error);
@@ -139,6 +140,10 @@ export default {
 
                 b{
                     font-weight:700;
+                }
+                i{
+                    font-weight:700;
+                    font-style: italic;
                 }
             }
         }

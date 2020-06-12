@@ -1,14 +1,14 @@
 <template>
     <div class="flip-box" :fliped="flipCard" v-if="!loading">
         <div class="rotate-btn" @click="flipCard = !flipCard"></div>
-        <div class="flip-box-inner">
+        <router-link :to="linkTo" class="flip-box-inner">
             <div class="flip-box-front">
                 <img :src="value[0].image_uris['normal']" :title="value[0].name" />
             </div>
             <div class="flip-box-back">
                 <img :src="value[1].image_uris['normal']" :title="value[1].name" />
             </div>
-        </div>
+        </router-link>
     </div>
 </template>
 
@@ -19,7 +19,8 @@ export default {
         value: Array,
         front: String,
         back: String,
-        loading: Boolean
+        loading: Boolean,
+        linkTo: String
     },
     data() {
         return {
@@ -57,7 +58,7 @@ export default {
             top: 3rem;
             right: 1.7rem;
             border-radius:50px;
-            z-index:100;
+            z-index:1000;
             box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
             cursor:pointer;
         }

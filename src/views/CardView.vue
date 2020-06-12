@@ -55,6 +55,23 @@ export default {
 </script>
 
 <style lang="scss">
+    .rotate-btn{
+        background-color:#9dff00;
+        background-image:url('/images/rotate.svg');
+        background-size:50%;
+        background-position: center;
+        background-repeat: no-repeat;
+        width:32px;
+        height:32px;
+        display:block;
+        position: absolute;
+        top: 3rem;
+        right: 1.7rem;
+        border-radius:50px;
+        z-index:100;
+        box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+        cursor:pointer;
+    }
     [cards-view-page]{
         width:1080px;
         max-width:100%;

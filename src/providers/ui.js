@@ -19,6 +19,7 @@ Vue.filter('money', function (value, prefix) {
 
 
 Vue.filter('filterUrl', function (value) {
-    console.log('0')
-    return value.replace(' ','+').replace(', ','+');
+    var urlify = function(a){return a.toLowerCase().replace(/[^/a-z0-9]+/g, "-").replace(/^-+|-+$/g, "-").replace(/^-+|-+$/g, '')};
+    
+    return urlify(value);
 });
