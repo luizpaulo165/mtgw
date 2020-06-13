@@ -4,7 +4,9 @@ import router from './router'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VuePageTransition from 'vue-page-transition'
 
+Vue.use(VuePageTransition)
 Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false

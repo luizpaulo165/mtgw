@@ -4,24 +4,28 @@
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
       ref="card">
-      <div class="card" :style="[cardBgTransform, cardBgImage, cardStyle]">
-        <div class="card-bg"></div>
-        <!-- <div class="card-info">
-          <slot name="header"></slot>
-          <slot name="content"></slot>
-        </div> -->
-      </div>
+        <div class="card" :style="[cardBgTransform, cardBgImage, cardStyle]">
+            <div class="card-bg"></div>
+            <div class="card-info">
+                <slot name="header"></slot>
+                <slot name="content"></slot>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+import FlipCard from '@/components/FlipCard.vue';
+
 export default {
     name: 'CardPreview',
-    mounted() {
-    this.width = this.$refs.card.offsetWidth;
-    this.height = this.$refs.card.offsetHeight;
-  },
-    props: ['dataImage'],
+    components: {
+        FlipCard
+    },
+    props: {
+        dataImage: String,
+        dual: Array
+    },
     data: () => ({
         width: 0,
         height: 0,
@@ -29,6 +33,10 @@ export default {
         mouseY: 0,
         mouseLeaveDelay: null
     }),
+    mounted() {
+        this.width = this.$refs.card.offsetWidth;
+        this.height = this.$refs.card.offsetHeight;
+    },
     computed: {
         mousePX() {
             return this.mouseX / this.width;

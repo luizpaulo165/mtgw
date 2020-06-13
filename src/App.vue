@@ -1,8 +1,10 @@
 <template>
-  <div id="app">
-    <HeaderDefault />
-    <router-view />
-  </div>
+    <div id="app">
+        <HeaderDefault />
+        <vue-page-transition>
+            <router-view/>
+        </vue-page-transition>
+    </div>
 </template>
 
 <script>

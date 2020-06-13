@@ -26,7 +26,7 @@ export default {
         searchPage() {
             const searchText = this.search.replace(' ','+');
 
-            this.$router.push(`/search?q=${searchText}`);
+            this.$router.push(`/search?page=1&q=${searchText}`);
         }
     }
 }

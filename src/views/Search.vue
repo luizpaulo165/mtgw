@@ -5,14 +5,17 @@
         </div>
         <div info-return-cards>
             <div info>
-                <span>We finded <b>{{ cardShow.length }} {{ cardShow.length == 1 ? 'card' : 'cards' }}</b> where the name include <i>{{ queryPage }}</i></span>
+                <span>Page {{ currentPage }} at <b>{{ cardShow.length }} {{ cardShow.length == 1 ? 'card' : 'cards' }}</b> where the name include <i>{{ queryPage }}</i></span>
+            </div>
+            <div info>
+                <Pagination :value="arrayCards" :maxPerPage="maxPerPage" :search="queryPage" :loading="loading" />
             </div>
         </div>
         <div card-list v-if="!emptyCard">
-            <div v-for="(card, index) in cardShow" :key="'card-' + index" card-item>    
-                <FlipCard v-if="card.card_faces" :linkTo="'/card/' + card.name | filterUrl" :value="card.card_faces" :loading="loading"></FlipCard>
-                <router-link :to="'/card/' + card.name | filterUrl">
-                    <figure v-if="!card.card_faces">
+            <div v-for="(card, index) in arrayCards" :key="'card-' + index" card-item>    
+                <FlipCard v-if="card.card_faces" :linkTo="urlCard('/card/' + card.lang + '/' + card.set + '/' + card.collector_number + '/', card.name)" :value="card.card_faces" :loading="loading"></FlipCard>
+                <router-link :to="urlCard('/card/' + card.lang + '/' + card.set + '/' + card.collector_number + '/', card.name)">
+                    <figure v-if="!card.card_faces || !card.card_faces[0].image_uris">
                         <img :src="card.image_uris['normal']" :title="card.name" :alt="card.name" />
                     </figure>
                 </router-link>
@@ -25,12 +28,14 @@
 </template>
 
 <script>
-import FlipCard from '@/components/FlipCard.vue'
+import FlipCard from '@/components/FlipCard.vue';
+import Pagination from '@/components/Pagination.vue';
 
 export default {
     name: 'Search',
     components: {
-        FlipCard
+        FlipCard,
+        Pagination
     },
     data () {
         return {
@@ -38,7 +43,9 @@ export default {
             queryPage: null,
             loading: false,
             emptyCard: false,
-            flipImg: false
+            flipImg: false,
+            currentPage: 1,
+            maxPerPage: 50
         }
     },
     watch:{
@@ -49,22 +56,66 @@ export default {
     mounted() {
         this.loadingContent();
     },
+    computed: {
+        arrayCards() {
+            this.currentPage = this.$route.query.page == undefined ? 1 : this.$route.query.page;
+
+            let result = [];
+            const limitItems = this.maxPerPage;
+            let totalPage = Math.ceil( this.cardShow.length / limitItems );
+            let count = ( this.currentPage * limitItems ) - limitItems;
+            let delimiter = count + limitItems;
+            console.log('deld:' + totalPage)
+            
+            if(this.currentPage <= totalPage){
+                for(let i=count; i<delimiter; i++){
+                    if(this.cardShow[i] != null){
+                        result.push(this.cardShow[i]);
+                    }
+                    count++;
+                }
+            }
+
+            return result;
+        }
+    },
     methods: {
+        urlCard (page,value) {
+            const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
+            const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
+            const p = new RegExp(a.split('').join('|'), 'g')
+            const url = value.toString().toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(p, c => b.charAt(a.indexOf(c)))
+                .replace(/&/g, '-and-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-')
+                .replace(/^-+/, '')
+                .replace(/-+$/, '');
+
+            return page + url
+        },
         loadingContent() {
             const self = this;
             this.queryPage = this.$route.query.q;
             this.loading = true;
 
-            this.$http.get(`https://api.scryfall.com/cards/search?q=${this.queryPage}`).then((response) => {
+            this.$http.get(`https://api.scryfall.com/cards/search?page=1&q=${this.queryPage}`).then((response) => {
                 self.emptyCard = false;
-                self.perPage = parseInt(response.data['total_cards']);
                 self.cardShow = response.data.data;
                 self.loading = false;
+
+                console.log(this.arrayCards)
+
+                if (this.cardShow.length == 1) {
+                    const oneCard = this.queryPage
+                    const urlOneCard = oneCard.toLowerCase().replace(/[^/a-z0-9]+/g, "-").replace(/^-+|-+$/g, "-").replace(/^-+|-+$/g, '');
+                    this.$router.push(`card/${urlOneCard}`);
+                }
             }).catch(function (error) {
                 self.emptyCard = true;
                 console.log(error);
             });
-
         }
     }
 }
@@ -81,6 +132,10 @@ export default {
             box-sizing: border-box;
 
             [card-item]{
+                background-image:url('/images/card_loading.gif');
+                background-position:center;
+                background-size:42px;
+                background-repeat: no-repeat;
                 width: 19.5%;
                 padding:0 10px;
                 margin-bottom:20px;
@@ -125,16 +180,16 @@ export default {
         }
     }
     [info-return-cards]{
-        [info]{
-            background:#d8d0d8;
-            height:36px;
-            display:flex;
-            align-items: center;
-            justify-content: flex-start;
-            border-bottom:#dfdfdf;
-            padding:0 1.5rem;
-            box-sizing: border-box;
+        background:#d8d0d8;
+        height:36px;
+        display:flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom:#dfdfdf;
+        padding:0 1.5rem;
+        box-sizing: border-box;
 
+        [info]{
             span{
                 font-size:14px;
 

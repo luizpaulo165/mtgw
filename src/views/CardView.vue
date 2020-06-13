@@ -1,9 +1,12 @@
 <template>
     <div cards-view-page v-if="!loading">
        <div col>
-            <div wrap-image-preview>
-                <CardPreview :data-image="card.image_uris['large']"></CardPreview>
-            </div>
+           <div wrap-image-preview>
+                <FlipCard v-if="card.card_faces" :value="card.card_faces" :loading="loading"></FlipCard>
+                <figure v-if="!card.card_faces">
+                    <img :src="card.image_uris['normal']" :title="card.name" :alt="card.name" />
+                </figure>
+           </div>
        </div>
        <div col></div>
     </div>
@@ -11,17 +14,15 @@
 
 <script>
 import FlipCard from '@/components/FlipCard.vue';
-import CardPreview from '@/components/CardPreview.vue';
 
 export default {
     name: 'cardView',
     components: {
-        CardPreview,
         FlipCard
     },
     data () {
         return {
-            card: {},
+            card: [],
             loading: true,
             emptyCard: true
         }
@@ -72,17 +73,20 @@ export default {
         box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
         cursor:pointer;
     }
+    
     [cards-view-page]{
         width:1080px;
         max-width:100%;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: flex-start;
         flex-direction: row;
+        margin:0 auto;
+        padding:20px 0;
         
         [col]{
             [wrap-image-preview]{
-                width: 350px;
+                width: 500px;
                 padding:0 10px;
                 box-sizing: border-box;
                 transition:0.15s ease-in-out;

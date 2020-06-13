@@ -1,7 +1,7 @@
 <template>
-    <div class="flip-box" :fliped="flipCard" v-if="!loading">
+    <div class="flip-box" :fliped="flipCard" v-if="!loading && value[0].image_uris">
         <div class="rotate-btn" @click="flipCard = !flipCard"></div>
-        <router-link :to="linkTo" class="flip-box-inner">
+        <router-link v-if="linkTo" :to="linkTo" class="flip-box-inner">
             <div class="flip-box-front">
                 <img :src="value[0].image_uris['normal']" :title="value[0].name" />
             </div>
@@ -9,6 +9,14 @@
                 <img :src="value[1].image_uris['normal']" :title="value[1].name" />
             </div>
         </router-link>
+        <div v-if="!linkTo" class="flip-box-inner">
+            <div class="flip-box-front">
+                <img :src="value[0].image_uris['normal']" :title="value[0].name" />
+            </div>
+            <div class="flip-box-back">
+                <img :src="value[1].image_uris['normal']" :title="value[1].name" />
+            </div>
+        </div>
     </div>
 </template>
 
