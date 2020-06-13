@@ -18,7 +18,7 @@ const routes = [
         path: '/search',
         name: 'Search',
         component: Search,
-        meta: { transition: 'fade-in-up' },
+        meta: { transition: 'fade' },
         props: { page: null, q: null }
     },
     {
@@ -35,7 +35,7 @@ const routes = [
         path: '/card/:lang/:set/:colNumber/:name',
         name: 'CardView',
         component: CardView,
-        meta: { transition: 'fade-in-left' }
+        meta: { transition: 'fade' }
     },
 ]
 

@@ -3,18 +3,18 @@
         <div class="rotate-btn" @click="flipCard = !flipCard"></div>
         <router-link v-if="linkTo" :to="linkTo" class="flip-box-inner">
             <div class="flip-box-front">
-                <img :src="value[0].image_uris['normal']" :title="value[0].name" />
+                <img :src="value[0].image_uris[sizeImage]" :title="value[0].name" />
             </div>
             <div class="flip-box-back">
-                <img :src="value[1].image_uris['normal']" :title="value[1].name" />
+                <img :src="value[1].image_uris[sizeImage]" :title="value[1].name" />
             </div>
         </router-link>
         <div v-if="!linkTo" class="flip-box-inner">
             <div class="flip-box-front">
-                <img :src="value[0].image_uris['normal']" :title="value[0].name" />
+                <img :src="value[0].image_uris[sizeImage]" :title="value[0].name" />
             </div>
             <div class="flip-box-back">
-                <img :src="value[1].image_uris['normal']" :title="value[1].name" />
+                <img :src="value[1].image_uris[sizeImage]" :title="value[1].name" />
             </div>
         </div>
     </div>
@@ -28,7 +28,8 @@ export default {
         front: String,
         back: String,
         loading: Boolean,
-        linkTo: String
+        linkTo: String,
+        sizeImage: String
     },
     data() {
         return {
@@ -52,6 +53,11 @@ export default {
         display: inline-block;
         perspective: 1000px;
         position: relative;
+
+        img{
+            border-radius:22px;
+            overflow: hidden;
+        }
 
         .rotate-btn{
             background-color:#9dff00;

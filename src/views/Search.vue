@@ -1,29 +1,32 @@
 <template>
-    <div search-card-page v-if="!loading">
-        <div empty-card v-if="emptyCard">
-            No card found
-        </div>
+    <div>     
         <div info-return-cards>
             <div info>
-                <span>Page {{ currentPage }} at <b>{{ cardShow.length }} {{ cardShow.length == 1 ? 'card' : 'cards' }}</b> where the name include <i>{{ queryPage }}</i></span>
+                <span>Page: <b>{{ $route.query.page }}</b> | <b>{{ cardShow.length }} {{ cardShow.length == 1 ? 'card' : 'cards' }}</b> where the name include <i>"{{ queryPage }}"</i></span>
             </div>
             <div info>
                 <Pagination :value="arrayCards" :maxPerPage="maxPerPage" :search="queryPage" :loading="loading" />
             </div>
         </div>
-        <div card-list v-if="!emptyCard">
-            <div v-for="(card, index) in arrayCards" :key="'card-' + index" card-item>    
-                <FlipCard v-if="card.card_faces" :linkTo="urlCard('/card/' + card.lang + '/' + card.set + '/' + card.collector_number + '/', card.name)" :value="card.card_faces" :loading="loading"></FlipCard>
-                <router-link :to="urlCard('/card/' + card.lang + '/' + card.set + '/' + card.collector_number + '/', card.name)">
-                    <figure v-if="!card.card_faces || !card.card_faces[0].image_uris">
-                        <img :src="card.image_uris['normal']" :title="card.name" :alt="card.name" />
-                    </figure>
-                </router-link>
+        <div search-card-page v-if="!loading">
+            {{ emptyCard }}
+            <div empty-card v-if="emptyCard">
+                No card found
+            </div>
+            <div card-list v-if="!emptyCard">
+                <div v-for="(card, index) in arrayCards" :key="'card-' + index" card-item>    
+                    <FlipCard v-if="card.card_faces" :linkTo="urlCard('/card/' + card.lang + '/' + card.set + '/' + card.collector_number + '/', card.name)" :value="card.card_faces" :sizeImage="'small'" :loading="loading"></FlipCard>
+                    <router-link :to="urlCard('/card/' + card.lang + '/' + card.set + '/' + card.collector_number + '/', card.name)">
+                        <figure v-if="!card.card_faces || !card.card_faces[0].image_uris">
+                            <img :src="card.image_uris['small']" :title="card.name" :alt="card.name" />
+                        </figure>
+                    </router-link>
+                </div>
             </div>
         </div>
-    </div>
-    <div loading v-else>
-        <div item-loading v-for="(item, index) in 10" :key="'load-' + index" ><span></span></div>
+        <div loading v-if="loading">
+            <div item-loading v-for="(item, index) in 10" :key="'load-' + index" ><span></span></div>
+        </div>
     </div>
 </template>
 
@@ -45,7 +48,8 @@ export default {
             emptyCard: false,
             flipImg: false,
             currentPage: 1,
-            maxPerPage: 50
+            maxPerPage: 50,
+            returnLengthPage: 0
         }
     },
     watch:{
@@ -65,7 +69,6 @@ export default {
             let totalPage = Math.ceil( this.cardShow.length / limitItems );
             let count = ( this.currentPage * limitItems ) - limitItems;
             let delimiter = count + limitItems;
-            console.log('deld:' + totalPage)
             
             if(this.currentPage <= totalPage){
                 for(let i=count; i<delimiter; i++){
@@ -105,14 +108,13 @@ export default {
                 self.cardShow = response.data.data;
                 self.loading = false;
 
-                console.log(this.arrayCards)
-
                 if (this.cardShow.length == 1) {
-                    const oneCard = this.queryPage
-                    const urlOneCard = oneCard.toLowerCase().replace(/[^/a-z0-9]+/g, "-").replace(/^-+|-+$/g, "-").replace(/^-+|-+$/g, '');
-                    this.$router.push(`card/${urlOneCard}`);
+                    const oneCard = self.cardShow[0];
+                    
+                    this.$router.push(this.urlCard('/card/' + oneCard.lang + '/' + oneCard.set + '/' + oneCard.collector_number + '/', oneCard.name));
                 }
             }).catch(function (error) {
+                self.loading = false;
                 self.emptyCard = true;
                 console.log(error);
             });
@@ -155,6 +157,12 @@ export default {
                         position:absolute;
                         top:0;
                         left:0;
+                        border-radius:12px;
+                    }
+                }
+                .flip-box{
+                    img{
+                        border-radius:12px;
                     }
                 }
                 [flag-set]{

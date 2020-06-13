@@ -1,11 +1,13 @@
 <template>
     <div cards-view-page v-if="!loading">
        <div col>
-           <div wrap-image-preview>
-                <FlipCard v-if="card.card_faces" :value="card.card_faces" :loading="loading"></FlipCard>
-                <figure v-if="!card.card_faces">
-                    <img :src="card.image_uris['normal']" :title="card.name" :alt="card.name" />
-                </figure>
+           <div wrap-image-preview :active="activePage">
+                <div center-card :active="!activePage">
+                    <FlipCard v-if="card.card_faces" :value="card.card_faces" :sizeImage="'normal'" :loading="loading"></FlipCard>
+                    <figure v-if="!card.card_faces">
+                        <img :src="card.image_uris['normal']" :title="card.name" :alt="card.name" />
+                    </figure>
+                </div>
            </div>
        </div>
        <div col></div>
@@ -24,7 +26,8 @@ export default {
         return {
             card: [],
             loading: true,
-            emptyCard: true
+            emptyCard: true,
+            activePage: false
         }
     },
     watch:{
@@ -45,7 +48,11 @@ export default {
                 self.card = response.data;
                 self.loading = false;
                 self.emptyCard = false;
-                this.isLoaded = true;
+                self.isLoaded = true;
+                
+                setTimeout(() => {
+                    self.activePage = true;
+                }, 320)
             }).catch(function (error) {
                 self.emptyCard = true;
                 console.log(error);
@@ -77,6 +84,7 @@ export default {
     [cards-view-page]{
         width:1080px;
         max-width:100%;
+        min-height:100vh;
         display: flex;
         justify-content: flex-start;
         align-items: flex-start;
@@ -86,13 +94,81 @@ export default {
         
         [col]{
             [wrap-image-preview]{
-                width: 500px;
+                width: 400px;
                 padding:0 10px;
                 box-sizing: border-box;
                 transition:0.15s ease-in-out;
+                position: relative;
+
+                &[active='true']{
+                    &:before{
+                        bottom:10px;
+                        left:-20%;
+                        transform:rotate(-20deg) scale(0.85);
+                        transition:0.5s all ease-in-out;
+                    }
+                    &:after{
+                        bottom:10px;
+                        right:-20%;
+                        transform:rotate(20deg) scale(0.85);
+                        transition:0.5s all ease-in-out;
+                    }
+                }
 
                 img{
                     width:100%;
+                    border-radius:22px;
+                }
+
+                [center-card]{
+                    width:inherit;
+                    height:0;
+                    padding-top:146%;
+                    position:relative;
+                    z-index:10;
+                    border-radius:22px;
+
+                    &[active="true"]{
+                        background-image:url('/images/card_loading.gif');
+                        background-color:#000;
+                        background-position:center;
+                        background-size:42px;
+                        background-repeat: no-repeat;
+                    }
+
+                    figure,
+                    .flip-box{
+                        position:absolute;
+                        top:0;
+                        left:0;
+                    }
+                }
+
+                &:before,
+                &:after{
+                    background-image:url('/images/mtg-card-back.png');
+                    background-position:center;
+                    background-size:contain;
+                    background-repeat: no-repeat;
+                    content:'';
+                    width: inherit;
+                    height:0;
+                    display:block;
+                    padding-top:138%;
+                    position: absolute;
+                    bottom:5px;
+                    border-radius:22px;
+                    z-index: 0;
+                }
+                &:before{
+                    left:0;
+                    transform:rotate(0) scale(0.85);
+                    transition:0.1s all ease-in-out;
+                }
+                &:after{
+                    right:0%;
+                    transform:rotate(0) scale(0.85);
+                    transition:0.1s all ease-in-out;
                 }
             }
         }
