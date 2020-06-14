@@ -9,7 +9,7 @@ import VuePageTransition from 'vue-page-transition'
 Vue.use(VuePageTransition)
 Vue.use(VueAxios, axios)
 
-Vue.config.productionTip = false
+Vue.config.productionTip = true
 
 import Providers from "@/providers/ui.js"
 

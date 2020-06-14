@@ -20,7 +20,7 @@ export default {
         maxPerPage: Number
     },
     mounted(){
-        console.log(this.value.length)
+        //
     },
     methods: {
         nextPage() {

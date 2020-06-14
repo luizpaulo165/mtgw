@@ -53,7 +53,6 @@ export default {
                 this.cardShow = response.data.data;
                 this.loading = false;
                 self.emptyCard = false;
-                console.log(this.cardShow)
             }).catch(function (error) {
                 self.emptyCard = true;
                 console.log(error);
