@@ -5,27 +5,37 @@
                 <span>Page: <b>{{ $route.query.page }}</b> | <b>{{ cardShow.length }} {{ cardShow.length == 1 ? 'card' : 'cards' }}</b> where the name include <i>"{{ queryPage }}"</i></span>
             </div>
             <div info>
-                <Pagination :value="arrayCards" :maxPerPage="maxPerPage" :search="queryPage" :loading="loading" />
+                <Pagination :value="arrayCards" :maxPerPage="maxPerPage" :search="queryPage" :loading="false" />
             </div>
         </div>
-        <div search-card-page v-if="!loading">
-            {{ emptyCard }}
-            <div empty-card v-if="emptyCard">
-                No card found
-            </div>
-            <div card-list v-if="!emptyCard">
-                <div v-for="(card, index) in arrayCards" :key="'card-' + index" card-item>    
-                    <FlipCard v-if="card.card_faces" :linkTo="urlCard('/card/' + card.lang + '/' + card.set + '/' + card.collector_number + '/', card.name)" :value="card.card_faces" :sizeImage="'small'" :loading="loading"></FlipCard>
-                    <router-link :to="urlCard('/card/' + card.lang + '/' + card.set + '/' + card.collector_number + '/', card.name)">
-                        <figure v-if="!card.card_faces || !card.card_faces[0].image_uris">
-                            <img :src="card.image_uris['small']" :title="card.name" :alt="card.name" />
-                        </figure>
-                    </router-link>
+        <div content-page-cards>
+            <div col-content>
+                <div loading v-if="loading">
+                    <div item-loading v-for="(item, index) in 10" :key="'load-' + index" ><span></span></div>
+                </div>
+                <div search-card-page v-if="!loading">
+                    <div empty-card v-if="emptyCard">
+                        No card found
+                    </div>
+                    <div card-list v-if="!emptyCard">
+                        <draggable
+                            class="dragArea list-group"
+                            :list="arrayCards"
+                            :group="{ name: 'people', pull: 'clone', put: false }"
+                        >
+                            <div v-for="(card, index) in arrayCards" :key="'card-' + index" card-item>    
+                                <FlipCard v-if="card.card_faces" :linkTo="urlCard('/card/' + card.lang + '/' + card.set + '/' + card.collector_number + '/', card.name)" :value="card.card_faces" :sizeImage="'small'" :loading="loading"></FlipCard>
+                                <router-link :to="urlCard('/card/' + card.lang + '/' + card.set + '/' + card.collector_number + '/', card.name)">
+                                    <figure v-if="!card.card_faces || !card.card_faces[0].image_uris">
+                                        <img :src="card.image_uris['small']" :title="card.name" :alt="card.name" />
+                                    </figure>
+                                </router-link>
+                            </div>
+                        </draggable>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div loading v-if="loading">
-            <div item-loading v-for="(item, index) in 10" :key="'load-' + index" ><span></span></div>
+            <DecklistBuilder :opening="true" :value="deckListBuilder"></DecklistBuilder>
         </div>
     </div>
 </template>
@@ -33,12 +43,16 @@
 <script>
 import FlipCard from '@/components/FlipCard.vue';
 import Pagination from '@/components/Pagination.vue';
+import DecklistBuilder from '@/components/DecklistBuilder.vue'
+import draggable from 'vuedraggable'
 
 export default {
     name: 'Search',
     components: {
         FlipCard,
-        Pagination
+        Pagination,
+        DecklistBuilder,
+        draggable
     },
     data () {
         return {
@@ -49,7 +63,8 @@ export default {
             flipImg: false,
             currentPage: 1,
             maxPerPage: 50,
-            returnLengthPage: 0
+            returnLengthPage: 0,
+            deckListBuilder: []
         }
     },
     watch:{
@@ -109,7 +124,25 @@ export default {
 </script>
 
 <style lang="scss">
+    [content-page-cards]{
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        [col-content]{
+            flex:1;
+        }
+    }
     [search-card-page]{
+        .dragArea{
+            width:100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            padding:20px 0;
+            box-sizing: border-box;
+        }
         [card-list]{
             display: flex;
             justify-content: center;
@@ -123,7 +156,7 @@ export default {
                 background-position:center;
                 background-size:42px;
                 background-repeat: no-repeat;
-                width: 19.5%;
+                width: 25%;
                 padding:0 10px;
                 margin-bottom:20px;
                 box-sizing: border-box;
@@ -204,7 +237,7 @@ export default {
         padding:20px 0;
 
         [item-loading]{
-            width: 19.5%;
+            width: 25%;
             padding:0 10px;
             margin-bottom:20px;
             box-sizing: border-box;

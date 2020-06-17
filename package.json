@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build --mode production"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -12,6 +12,7 @@
     "vue-axios": "^2.1.5",
     "vue-page-transition": "^0.2.2",
     "vue-router": "^3.2.0",
+    "vuedraggable": "^2.23.2",
     "vuejs-paginate": "^2.1.0"
   },
   "devDependencies": {

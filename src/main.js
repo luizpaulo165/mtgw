@@ -11,7 +11,7 @@ Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = true
 
-import Providers from "@/providers/ui.js"
+import Providers from "./providers/ui.js"
 
 new Vue({
   router,
